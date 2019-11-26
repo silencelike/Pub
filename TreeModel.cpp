@@ -6,8 +6,8 @@
 using namespace mobile;
 
 TreeModel::TreeModel(QObject *parent)
-    : QAbstractItemModel(parent)
-    , m_root(std::make_unique<TreeItem>(nullptr))
+	: QAbstractItemModel(parent)
+	, m_root(std::make_unique<TreeItem>(nullptr))
 {
 }
 
@@ -32,9 +32,9 @@ QModelIndex TreeModel::parent(const QModelIndex &index) const
 int TreeModel::rowCount(const QModelIndex &parent) const
 {
 	// only first column has children
-    if (parent.isValid() && parent.column() != 0) {
-        return 0;
-    }
+	if (parent.isValid() && parent.column() != 0) {
+		return 0;
+	}
 	return at(parent)->rowCount();
 }
 
@@ -45,20 +45,20 @@ int TreeModel::columnCount(const QModelIndex &parent) const
 
 QVariant TreeModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid()) {
+	if (!index.isValid()) {
 		return {};
-    }
+	}
 	return at(index)->data(index.column(), role);
 }
 
 bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if (data(index, role) == value) {
+	if (data(index, role) == value) {
 		return false;
-    }
-    if (!at(index)->setData(value, index.column(), role)) {
+	}
+	if (!at(index)->setData(value, index.column(), role)) {
 		return false;
-    }
+	}
 	emit dataChanged(index, index, {role});
 	return true;
 }
@@ -66,9 +66,9 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value, int rol
 bool TreeModel::insertRows(int row, int count, const QModelIndex &parent)
 {
 	auto item = at(parent);
-    if (!item->canInsertRows(row, count)) {
+	if (!item->canInsertRows(row, count)) {
 		return false;
-    }
+	}
 	beginInsertRows(parent, row, row + count - 1);
 	item->insertRows(row, count);
 	endInsertRows();
@@ -79,9 +79,9 @@ bool TreeModel::insertRows(int row, int count, const QModelIndex &parent)
 bool TreeModel::insertColumns(int column, int count, const QModelIndex &parent)
 {
 	auto item = at(parent);
-    if (!item->canInsertColumns(column, count)) {
+	if (!item->canInsertColumns(column, count)) {
 		return false;
-    }
+	}
 	beginInsertColumns(parent, column, column + count - 1);
 	item->insertColumns(column, count);
 	endInsertColumns();
@@ -92,9 +92,9 @@ bool TreeModel::insertColumns(int column, int count, const QModelIndex &parent)
 bool TreeModel::removeRows(int row, int count, const QModelIndex &parent)
 {
 	auto item = at(parent);
-    if (!item->canRemoveRows(row, count)) {
+	if (!item->canRemoveRows(row, count)) {
 		return false;
-    }
+	}
 	beginRemoveRows(parent, row, row + count - 1);
 	item->removeRows(row, count);
 	endRemoveRows();
@@ -117,16 +117,16 @@ TreeItem *TreeModel::at(const QModelIndex &index)
 const TreeItem *TreeModel::at(const QModelIndex &index) const
 {
 	auto item = reinterpret_cast<const TreeItem *>(index.internalPointer());
-    if (!item) {
+	if (!item) {
 		item = m_root.get();
-    }
+	}
 	return item;
 }
 
 QModelIndex TreeModel::indexOf(TreeItem *item) const
 {
-    if (!item || !item->m_parent) {
+	if (!item || !item->m_parent) {
 		return {};
-    }
+	}
 	return createIndex(item->m_parent->indexOf(item), 0, item);
 }
